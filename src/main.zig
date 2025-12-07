@@ -24,19 +24,26 @@ pub fn main() !void {
     // using @cImport
     // vkdt.dt_tool_print_usage();
     vkdt.dt_log_init(vkdt.s_log_all); // s_log_none, s_log_cli, or s_log_all
+
+    // vkdt assigned basedir inside dt_pipe_global_init(), so this will get overridden
+    // var basedir: [260]u8 = @import("std").mem.zeroes([260]u8);
+    // const basedir_slice = "C:/Users/phcre/Documents/c/vkdt/bin";
+    // @memcpy(basedir[0..basedir_slice.len], basedir_slice);
+    // vkdt.dt_pipe.basedir = basedir;
+
     _ = vkdt.dt_pipe_global_init();
     vkdt.threads_global_init();
 
     const cfg_file = "C:/Users/phcre/Pictures/DSC_6765.NEF.cfg";
     // const cfg_file = "C:/Users/phcre/Pictures/IMG_8916.jpg.cfg";
     const output_file = "output_test";
-    // const output_format = "o-exr";
-    const output_format = 0x72_78_65_2D_6F; // "rxe-o" in hex
+    const output_format = 0x72_78_65_2D_6F; // "rxe-o" in hex ("o-exr")
     var param: vkdt.dt_graph_export_t = .{};
     param.p_cfgfile = cfg_file.ptr;
     param.output[0].colour_primaries = vkdt.s_colour_primaries_unknown;
     param.output[0].colour_trc = vkdt.s_colour_primaries_unknown;
     param.output[0].p_filename = output_file.ptr;
+    // vkdt.dt_token does not work with zig translate-c headers
     // param.output[0].mod = vkdt.dt_token(output_format.ptr);
     param.output[0].mod = output_format;
     param.output_cnt = 1;
